@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Node Websocket</title>
+
+</head>
+
+<body>
+    <p>You are logged in as <span id="username"></span></p>
+    <form id="msg-form">
+        <p>write a message:</p>
+        <input type="hidden" id="user" name="user" />
+        <input type="text" id="message" name="message" />
+        <button type="button" id="submit">submit</button>
+    </form>
+    <ul id="chat-area"></ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+      const socket = io();
+      let username = window.location.pathname.split("/")[1];
+      document.getElementById("user").value = username;
+      document.getElementById("username").innerText = username;
+
+      document.getElementById("submit").addEventListener("click", function(e) {
+        socket.emit('chat message', {
+            user: username,
+            message: document.getElementById("message").value
+        });
+      });
+
+      socket.on('chat message', function(msg) {
+        document.getElementById('chat-area').innerHTML += `<li>${msg.user} says: ${msg.message}</li>`;
+      });
+  </script>
+</body>
+</html>
